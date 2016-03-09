@@ -1,0 +1,12 @@
+CMakeFiles/
+Makefile
+cmake_install.cmake
+CMakeCache.txt
+*.ply
+*.log
+libicpodometry.so
+libfreenect*.so*
+libfreenect*.a*
+*~
+third_party/libfreenect/build
+.idea/

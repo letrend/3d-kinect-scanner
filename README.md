@@ -13,7 +13,7 @@ ncurses
 ```
 #!bash
 cd path/to/3d-kinect-scanner
-mkdir build
+mkdir build data
 cd build
 cmake ..
 make -j4
@@ -26,6 +26,11 @@ make -j4
 ```
 
 ## USAGE ##
+### initialize ###
 use initialize to set the cube size and the voxel size. this affects the scanable objectsize.
 it is however limited by the available memory on your gpu. for 2GB 500x500x500 seems to be the limit.
 the voxelsize affects the resolution of the resulting mesh.
+### scan ###
+scan what you like
+### save mesh ###
+choose filename or default. you will find the result in path/to/3d-kinect-scanner/data

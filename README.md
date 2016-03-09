@@ -1,5 +1,5 @@
 # 3D-KINECT-SCANNER
-cuda implementation of a 3d scanner for the kinect v1 
+cuda implementation of a 3d scanner for the kinect v1. it is based on the kinectfusion paper. you can find it the paper folder.
 
 ## DEPENDENCIES ##
 eigen

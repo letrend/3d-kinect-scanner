@@ -10,3 +10,4 @@ libfreenect*.a*
 *~
 third_party/libfreenect/build
 .idea/
+build/

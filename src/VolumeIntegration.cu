@@ -269,7 +269,7 @@ void VolumeIntegration::calculateVoxelGridPosition(float3 *voxels, float* depth,
             continue;
         }
 
-        if(depth[i]<3.0f){
+        if(depth[i]<1.5f){
 
             count++;
 

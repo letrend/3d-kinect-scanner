@@ -12,11 +12,11 @@ enum COLORS{
 char welcomestring[] = "commandline tool for 3d kinect scanner";
 char commandstring[] = "[0]initialize, [1]scan, [2]save mesh, [9]exit";
 char scanningcubedimensionstring[] = "scanning cube dimension?";
-char xdimstring[] = "xDim [default: 400]?  ";
-char ydimstring[] = "yDim [default: 400]?  ";
-char zdimstring[] = "zDim [default: 400]?  ";
+char xdimstring[] = "xDim [default: 480]?  ";
+char ydimstring[] = "yDim [default: 480]?  ";
+char zdimstring[] = "zDim [default: 480]?  ";
 char initializedstring[] = "initialized";
-char voxelsizestring[] = "voxel size in meter [default: 0.01]?  ";
+char voxelsizestring[] = "voxel size in meter [default: 0.002]?  ";
 char initializinggridlocationstring[] = "initializing grid location";
 char scanningstring[] = "scanning";
 char runningstring[] = "running ";
@@ -68,22 +68,22 @@ public:
         printMessage(5,0,xdimstring,CYAN);
         mvgetnstr(5,strlen(xdimstring),inputstring,30);
         uint xDim = atoi(inputstring);
-        if(xDim==0) xDim = 400;
+        if(xDim==0) xDim = 480;
 
         printMessage(6,0,ydimstring,CYAN);
         mvgetnstr(6,strlen(ydimstring),inputstring,30);
         uint yDim = atoi(inputstring);
-        if(yDim==0) yDim = 400;
+        if(yDim==0) yDim = 480;
 
         printMessage(7,0,zdimstring,CYAN);
         mvgetnstr(7,strlen(zdimstring),inputstring,30);
         uint zDim = atoi(inputstring);
-        if(zDim==0) zDim = 400;
+        if(zDim==0) zDim = 480;
 
         printMessage(8,0,voxelsizestring,CYAN);
         mvgetnstr(8,strlen(voxelsizestring),inputstring,30);
         float voxelSize = atof(inputstring);
-        if(voxelSize==0) voxelSize = 0.01;
+        if(voxelSize==0) voxelSize = 0.002;
 
         scanner = new VolumeIntegration(xDim,yDim,zDim,voxelSize);
 

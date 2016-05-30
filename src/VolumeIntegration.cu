@@ -23,17 +23,12 @@ VolumeIntegration::VolumeIntegration(uint xDim, uint yDim, uint zDim, float voxe
     CUDA_CHECK;
 
     // image resolution and number of color channels
-    pWidth = 640;
-    pHeight = 480;
+    pWidth = 512;
+    pHeight = 424;
     nc = 3;
 
     // Initialize Kinect
-    device = &freenect.createDevice<MyFreenectDevice>(0);
-    device->freenectTiltState = new Freenect::FreenectTiltState(
-            device->getState());
-    device->setDepthFormat(FREENECT_DEPTH_MM);// FREENECT_DEPTH_REGISTERED
-    device->startVideo();
-    device->startDepth();
+    device = new MyFreenectDevice;
 
     dataFolder = string(STR(TSDF_CUDA_SOURCE_DIR))+ "/data/";
 
@@ -177,6 +172,8 @@ VolumeIntegration::VolumeIntegration(uint xDim, uint yDim, uint zDim, float voxe
     icp = new ICPCUDA(pWidth, pHeight);
     Eigen::Matrix4f pose_init = Eigen::Matrix4f::Identity();
     icp->setInitialPose(pose_init);
+
+    device->updateFrames();
 }
 VolumeIntegration::~VolumeIntegration(){
     cudaFree(d_depth);
@@ -216,6 +213,7 @@ VolumeIntegration::~VolumeIntegration(){
     delete[] red;
     delete[] green;
     delete[] blue;
+    delete device;
 }
 bool VolumeIntegration::intializeGridPosition(){
     cv::namedWindow("color", CV_WINDOW_AUTOSIZE);
@@ -223,9 +221,11 @@ bool VolumeIntegration::intializeGridPosition(){
     cv::namedWindow("depth", CV_WINDOW_AUTOSIZE);
     cvMoveWindow("depth", 100 + pWidth + 40, 0);
     while (true) {
+        if(!device->updateFrames())
+            continue;
         device->getDepthMM(depth1);
         device->getRgbMapped2Depth(color);
-        cv::imshow("color", color / 255.0f);
+        cv::imshow("color", color);
         cv::imshow("depth", depth1 / 255.0f / 4.0f);
 
         char k = cv::waitKey(1);
@@ -549,7 +549,7 @@ __global__ void deviceCalculateTSDF(float *d_depth, float *d_color, float3 *d_no
 
         // if voxel is visible in camera frustum AND has a valid depth (greater than 0 and not NaN)
         if(pX >= 0 && pX < pWidth && pY >= 0 && pY < pHeight && p.z > near && p.z <= far
-           && d_depth[ind_depth] > 0.0f && d_depth[ind_depth] == d_depth[ind_depth]) {
+           && d_depth[ind_depth] > 0.0f && isfinite(d_depth[ind_depth])) {
 
             float sdf = p.z	- d_depth[ind_depth];
             if(sdf <= maxTruncation) {
@@ -572,9 +572,9 @@ __global__ void deviceCalculateTSDF(float *d_depth, float *d_color, float3 *d_no
                 }
 
                 // calculate preliminary color values (multiply by 255)
-                float red   = d_color[ind_depth + (size_t)pWidth*pHeight*0] ;
-                float green = d_color[ind_depth + (size_t)pWidth*pHeight*1] ;
-                float blue  = d_color[ind_depth + (size_t)pWidth*pHeight*2] ;
+                float red   = d_color[ind_depth + (size_t)pWidth*pHeight*0]*255.0f ;
+                float green = d_color[ind_depth + (size_t)pWidth*pHeight*1]*255.0f ;
+                float blue  = d_color[ind_depth + (size_t)pWidth*pHeight*2]*255.0f ;
 
                 // calculate weight
                 float oldWeight = d_voxelWeight[ind_voxel];
@@ -846,10 +846,9 @@ void VolumeIntegration::scan(){
     char k;
     uint frame = 0;
     while (k != 27) {
-
         device->getRgbMapped2Depth(color);
 
-        cv::imshow("color", color / 255.0f);
+        cv::imshow("color", color);
         cv::imshow("depth", depth1 / 255.0f / 10.0f);
 
         // convert and copy to device
@@ -946,6 +945,10 @@ void VolumeIntegration::scan(){
         depth0 *= 1000.0f;
 
         cv::imshow("depth Model", depth0 / 255.0f / 10.0f);
+
+        // get new kinect frames, if this fails exit scan loop
+        if(!device->updateFrames())
+            break;
 
         device->getDepthMM(depth1);
 

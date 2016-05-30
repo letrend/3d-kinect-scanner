@@ -94,8 +94,6 @@ private:
     float maxTruncation;
     //! voxelSize in meters
     float voxelSize;
-    //! freenect
-    Freenect::Freenect freenect;
     //! kinect device
     MyFreenectDevice *device;
     //! savePath

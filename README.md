@@ -1,11 +1,11 @@
 # 3D-KINECT-SCANNER
-cuda implementation of a 3d scanner for the kinect v1. it is based on the kinectfusion paper. you can find it the paper folder.
+cuda implementation of a 3d scanner for the kinect v2. it is based on the kinectfusion paper. you can find it the paper folder.
 
 ## DEPENDENCIES ##
 eigen
 cuda 7.5
 opencv
-freenect 
+freenect2
 libusb
 ncurses
 

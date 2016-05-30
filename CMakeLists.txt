@@ -24,13 +24,8 @@ SET(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -Xcompiler -g -gencode=arch=compute_50,co
 FIND_PACKAGE(OpenCV COMPONENTS opencv_core opencv_highgui opencv_imgproc REQUIRED)
 
 # Kinect
-find_package(Freenect REQUIRED )
-INCLUDE_DIRECTORIES(${FREENECT_INCLUDE_DIRS})
-message(STATUS  ${FREENECT_INCLUDE_DIRS})
-
-# libusb
-FIND_PACKAGE(Libusb REQUIRED)
-INCLUDE_DIRECTORIES(${LIBUSB_INCLUDE_DIRS})
+find_package(freenect2 REQUIRED)
+include_directories(${freenect2_INCLUDE_DIR})
 
 # ncurses
 FIND_PACKAGE(Curses REQUIRED)
@@ -69,5 +64,5 @@ ELSE(ICPCUDAODOMETRY_LIB)
 ENDIF(ICPCUDAODOMETRY_LIB)
 
 CUDA_ADD_EXECUTABLE(3D-kinect-scanner src/main.cu src/marching_cubes.cpp src/VolumeIntegration.cu)
-TARGET_LINK_LIBRARIES(3D-kinect-scanner ${OpenCV_LIBS} ${ICPCUDAODOMETRY_LIB} ${FREENECT_LIBRARIES} ${CURSES_LIBRARIES} -lboost_system -lpthread)
+TARGET_LINK_LIBRARIES(3D-kinect-scanner ${freenect2_LIBRARIES} ${OpenCV_LIBS} ${ICPCUDAODOMETRY_LIB} ${CURSES_LIBRARIES} -lboost_system -lpthread)
 

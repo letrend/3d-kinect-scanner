@@ -28,7 +28,6 @@ public:
     
     void getPoseFromDepth(cv::Mat &depth0f, cv::Mat &depth1f){
          // depth maps need to be in milimeters
-        
         depth0f.convertTo(depth0,CV_16U);
         depth1f.convertTo(depth1,CV_16U);
         

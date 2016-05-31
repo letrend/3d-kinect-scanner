@@ -10,13 +10,13 @@ enum COLORS{
 };
 //! standard query messages
 char welcomestring[] = "commandline tool for 3d kinect scanner";
-char commandstring[] = "[0]initialize, [1]scan, [2]save mesh, [9]exit";
+char commandstring[] = "[0]initialize, [1]scan, [2]save mesh, [3]calibrate camera, [9]exit";
 char scanningcubedimensionstring[] = "scanning cube dimension?";
 char xdimstring[] = "xDim [default: 480]?  ";
 char ydimstring[] = "yDim [default: 480]?  ";
 char zdimstring[] = "zDim [default: 480]?  ";
 char initializedstring[] = "initialized";
-char voxelsizestring[] = "voxel size in meter [default: 0.002]?  ";
+char voxelsizestring[] = "voxel size in meter [default: 0.01]?  ";
 char initializinggridlocationstring[] = "initializing grid location";
 char scanningstring[] = "scanning";
 char runningstring[] = "running ";
@@ -83,7 +83,7 @@ public:
         printMessage(8,0,voxelsizestring,CYAN);
         mvgetnstr(8,strlen(voxelsizestring),inputstring,30);
         float voxelSize = atof(inputstring);
-        if(voxelSize==0) voxelSize = 0.002;
+        if(voxelSize==0) voxelSize = 0.01;
 
         scanner = new VolumeIntegration(xDim,yDim,zDim,voxelSize);
 
@@ -143,6 +143,12 @@ public:
         }
         usleep(1000000);
         print(4,0,cols," ");
+    }
+    void calibrate(){
+        timeout(-1);
+        echo();
+        print(4,0,cols," ");
+        scanner->calibrate();
     }
 
 private:

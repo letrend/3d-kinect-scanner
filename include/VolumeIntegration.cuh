@@ -8,6 +8,7 @@
 #include "marching_cubes.hpp"
 #include "kinect.hpp"
 #include "icp_wrapper.hpp"
+#include "calibration.hpp"
 
 #define STR1(x)  #x
 #define STR(x)  STR1(x)
@@ -71,6 +72,10 @@ public:
      * the mesh is saved in ply format
      */
     bool saveMesh(string name="mesh.ply");
+    /**
+     * calibrate this function calibrates the webcam using opencvs chessboard calibration
+     */
+    bool calibrate();
 
 private:
     void calculateVoxelGridPosition(float3 *voxels, float* depth, size_t n, float vWidth,

@@ -21,7 +21,7 @@ FIND_PACKAGE(CUDA REQUIRED)
 SET(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -Xcompiler -g -gencode=arch=compute_50,code=sm_50 --use_fast_math)# -Xcompiler -DDEBUG -Xcompiler -g
 
 # OpenCV
-FIND_PACKAGE(OpenCV COMPONENTS opencv_core opencv_highgui opencv_imgproc REQUIRED)
+FIND_PACKAGE(OpenCV COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs opencv_calib3d REQUIRED)
 
 # Kinect
 find_package(freenect2 REQUIRED)
@@ -63,6 +63,6 @@ ELSE(ICPCUDAODOMETRY_LIB)
     ENDIF()
 ENDIF(ICPCUDAODOMETRY_LIB)
 
-CUDA_ADD_EXECUTABLE(3D-kinect-scanner src/main.cu src/marching_cubes.cpp src/VolumeIntegration.cu)
+CUDA_ADD_EXECUTABLE(3D-kinect-scanner src/main.cu src/marching_cubes.cpp src/VolumeIntegration.cu src/calibration.cpp)
 TARGET_LINK_LIBRARIES(3D-kinect-scanner ${freenect2_LIBRARIES} ${OpenCV_LIBS} ${ICPCUDAODOMETRY_LIB} ${CURSES_LIBRARIES} -lboost_system -lpthread)
 

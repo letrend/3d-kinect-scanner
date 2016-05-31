@@ -88,26 +88,33 @@ public:
     }
 
     void getVideo(cv::Mat& output) {
-        cv::Mat img = cv::Mat(rgb->height,rgb->width,CV_8UC4,rgb->data), img2;
-//        cv::flip(img, img, 1);
-        img.convertTo(img2,CV_BGRA2BGR);
-        img2.convertTo(output,CV_32FC3, 1/255.0f);
+//        cv::Mat img = cv::Mat(rgb->height,rgb->width,CV_8UC4,rgb->data), img2;
+        //        cv::flip(img, img, 1);
+        output = cv::Mat(rgb->height,rgb->width,CV_8UC3);
+        uchar *aOut = (uchar*)output.data;
+        int i=0;
+        for (int y=0; y<rgb->height; y++){
+            for (int x=0; x<rgb->width; x++){
+                for (int c=0; c<3; c++){
+                    aOut[c + 3*(x + (size_t)rgb->width*y)] = (uchar)rgb->data[c + 4*(x + (size_t)rgb->width*y)];
+                }
+            }
+        }
     }
 
     void getDepth(cv::Mat& output) {
-        output = cv::Mat(depth->height,depth->width,CV_32FC1,depth->data);
+        output = cv::Mat(undistorted->height,undistorted->width,CV_32FC1,undistorted->data);
         output/=1000.0f; // convert to meter
 //        cv::flip(output, output, 1);
     }
 
     void getDepthMM(cv::Mat& output) {
-        output = cv::Mat(depth->height,depth->width,CV_32FC1,depth->data);
+        output = cv::Mat(undistorted->height,undistorted->width,CV_32FC1,undistorted->data);
 //        cv::flip(output, output, 1);
     }
 
     void getRgbMapped2Depth(cv::Mat& output) {
-        registration->apply(rgb, depth, undistorted, registered);
-        cv::Mat img = cv::Mat(registered->height,registered->width,CV_8UC4,registered->data), img2;
+//        cv::Mat img = cv::Mat(registered->height,registered->width,CV_8UC4,registered->data), img2;
         float *aOut = (float*)output.data;
         int i=0;
         for (int y=0; y<registered->height; y++){
@@ -129,6 +136,7 @@ public:
             rgb = frames[libfreenect2::Frame::Color];
             ir = frames[libfreenect2::Frame::Ir];
             depth = frames[libfreenect2::Frame::Depth];
+            registration->apply(rgb, depth, undistorted, registered);
             return true;
         }
     }

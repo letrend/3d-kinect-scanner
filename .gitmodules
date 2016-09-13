@@ -1,0 +1,6 @@
+[submodule "kinect_utilities"]
+	path = kinect_utilities
+	url = https://github.com/letrend/kinect_utilities
+[submodule "ICPCUDA"]
+	path = ICPCUDA
+	url = https://github.com/mp3guy/ICPCUDA

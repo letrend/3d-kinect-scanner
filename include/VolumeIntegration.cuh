@@ -9,6 +9,7 @@
 #include "kinect.hpp"
 #include "icp_wrapper.hpp"
 #include "calibration.hpp"
+#include <memory>
 
 #define STR1(x)  #x
 #define STR(x)  STR1(x)
@@ -122,7 +123,7 @@ private:
     size_t bytesFloat, bytesFloatColor, bytesFloat3;
 
     //! bilateral filter parameters
-    static const float sigma_r = 5.0f, sigma_d = 5.0f;
+    static constexpr float sigma_r = 5.0f, sigma_d = 5.0f;
     int domain_kernel_width, domain_kernel_height;
     float* domain_kernel;
 
@@ -140,7 +141,7 @@ private:
     // Mat setup
     cv::Mat color, depth0, depth1, depthFiltered, mOut;
     //! icpcuda
-    ICPCUDA *icp;
+    std::shared_ptr<ICPCUDA> icp;
 
     //! camera pose
     Eigen::Matrix4f pose;

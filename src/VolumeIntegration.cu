@@ -30,11 +30,11 @@ VolumeIntegration::VolumeIntegration(uint xDim, uint yDim, uint zDim, float voxe
     // Initialize Kinect
     device = new MyFreenectDevice;
 
-    dataFolder = string(STR(TSDF_CUDA_SOURCE_DIR))+ "/data/";
+    dataFolder = "/home/letrend/workspace/3d-kinect-scanner/build/data/";//string(STR(TSDF_CUDA_SOURCE_DIR))+ "/data/";
 
     // initialize intrinsic and inverse intrinsic matrix
     Eigen::Matrix3f K;
-    K << 535.4, 0.0, 320.1, 0.0, 539.2, 247.6, 0.0, 0.0, 1.0;
+    K << device->irCameraParams.fx, 0.0, device->irCameraParams.cx, 0.0, device->irCameraParams.fy, device->irCameraParams.cy, 0.0, 0.0, 1.0;
     Eigen::Matrix3f Kinv = K.inverse();
     float *h_k = new float[3 * 3];
     float *h_kinv = new float[3 * 3];
@@ -169,10 +169,9 @@ VolumeIntegration::VolumeIntegration(uint xDim, uint yDim, uint zDim, float voxe
     mOut = cv::Mat(pHeight, pWidth, CV_32FC3);
 
     // initialize icpcuda
-    icp = new ICPCUDA(pWidth, pHeight);
-    Eigen::Matrix4f pose_init = Eigen::Matrix4f::Identity();
-    icp->setInitialPose(pose_init);
-
+    icp = std::shared_ptr<ICPCUDA>(new ICPCUDA(pWidth, pHeight, device->irCameraParams.cx,
+                      device->irCameraParams.cy, device->irCameraParams.fx,
+                      device->irCameraParams.fy));
     device->updateFrames();
 }
 VolumeIntegration::~VolumeIntegration(){
@@ -549,7 +548,7 @@ __global__ void deviceCalculateTSDF(float *d_depth, float *d_color, float3 *d_no
 
         // if voxel is visible in camera frustum AND has a valid depth (greater than 0 and not NaN)
         if(pX >= 0 && pX < pWidth && pY >= 0 && pY < pHeight && p.z > near && p.z <= far
-           && d_depth[ind_depth] > 0.0f && isfinite(d_depth[ind_depth])) {
+           && d_depth[ind_depth] > 0.0f ) {//&& isfinite(d_depth[ind_depth])
 
             float sdf = p.z	- d_depth[ind_depth];
             if(sdf <= maxTruncation) {
@@ -893,8 +892,8 @@ void VolumeIntegration::scan(){
 //				cv::imshow("depthFiltered", depthFiltered / 255.0f / 10.0f);
             // ICP
             icp->getPoseFromDepth(depth0, depthFiltered);
-            pose = icp->pose();
-            pose_inv = icp->pose_inv();
+            pose = icp->getPose().cast<float>();
+            pose_inv = icp->getPose_inv().cast<float>();
         }
 
         // set (inverse) camera pose and write it to constant device memory
@@ -1037,7 +1036,7 @@ __global__ void bilateralFilterKernel(float *img, float *res, int img_width, int
                 }
                 yy++;
             }
-            if (norm != 0.0f && isfinite(norm)) {
+            if (norm != 0.0f ) {//&& isfinite(norm)
                 res[ind_img] = val / norm;
             } else {
                 res[ind_img] = 0.0f;

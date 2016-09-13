@@ -1,5 +1,5 @@
 #pragma once
-
+#include <unistd.h>
 #include "VolumeIntegration.cuh"
 #include <ncurses.h>
 

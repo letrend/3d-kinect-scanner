@@ -1,0 +1,9 @@
+<library path="libkinect_scanner_plugin">
+    <class name="KinectScannerPlugin"
+           type="KinectScannerPlugin"
+           base_class_type="rviz::Panel">
+        <description>
+            A panel widget for 3d kinect scanner
+        </description>
+    </class>
+</library>

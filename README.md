@@ -4,10 +4,11 @@ cuda implementation of a 3d scanner for the kinect v2. it is based on the kinect
 ## DEPENDENCIES ##
 eigen
 cuda 7.5
-opencv
-freenect2
+opencv3
+[freenect2](https://github.com/OpenKinect/libfreenect2)
 libusb
-ncurses
+libncurses5-dev
+ICPCUDA_dependecies
 
 ## BUILD ##
 ```

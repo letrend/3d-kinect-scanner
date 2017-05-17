@@ -124,9 +124,12 @@ private:
 
     //! bilateral filter parameters
     static constexpr float sigma_r = 5.0f, sigma_d = 5.0f;
+public:
     int domain_kernel_width, domain_kernel_height;
     float* domain_kernel;
-
+    float h_k[9];
+    float h_kinv[9];
+private:
     // block and grid setup
     dim3 block, grid, gridVoxel;
     size_t smBytes;

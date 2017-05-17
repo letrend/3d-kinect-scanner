@@ -11,3 +11,4 @@ libfreenect*.a*
 third_party/libfreenect/build
 .idea/
 build/
+cmake-build-debug/

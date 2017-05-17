@@ -30,7 +30,7 @@ VolumeIntegration::VolumeIntegration(uint xDim, uint yDim, uint zDim, float voxe
     // Initialize Kinect
     device = new MyFreenectDevice;
 
-    dataFolder = "/home/letrend/workspace/3d-kinect-scanner/build/data/";//string(STR(TSDF_CUDA_SOURCE_DIR))+ "/data/";
+    dataFolder = "/home/roboy/workspace/kinect_scanner/build/data/";//string(STR(TSDF_CUDA_SOURCE_DIR))+ "/data/";
 
     // initialize intrinsic and inverse intrinsic matrix
     Eigen::Matrix3f K;

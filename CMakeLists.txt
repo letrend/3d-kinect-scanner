@@ -21,9 +21,9 @@ message(STATUS ${EIGEN3_INCLUDE_DIRS})
 include_directories(${EIGEN3_INCLUDE_DIRS})
 
 # CUDA
-SET(CUDA_TOOLKIT_ROOT_DIR /opt/cuda)
+SET(CUDA_TOOLKIT_ROOT_DIR /usr/local/cuda-8.0)
 FIND_PACKAGE(CUDA REQUIRED)
-SET(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -Xcompiler -g -gencode=arch=compute_50,code=sm_50 --use_fast_math -Xcompiler
+SET(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -Xcompiler -g -gencode=arch=compute_61,code=sm_61  --use_fast_math -Xcompiler
         -O3)# -Xcompiler -DDEBUG -Xcompiler -g
 
 # OpenCV
